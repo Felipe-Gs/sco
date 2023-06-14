@@ -19,20 +19,21 @@ public class QuestaoQuestionarioConverter implements Converter {
     
     private Map<String, Integer> indexMap;
     private boolean isIndexed;
+
+	private static final int INDEX_REAL_FIRST_LETTER = 1; 
+    private static final int INDEX_REAL_SECOND_LETTER = 2; 
+    private static final int INDEX_REAL_DEFAULT = 0;
     
-    private Map<String, Integer> createIndexMap(FacesContext context, UIComponent component) {
+	private Map<String, Integer> createIndexMap(UIOrderingList orderingList, Map<String, String[]> requestParameterValuesMap, String clientId) {
         Map<String, Integer> indexMap = new HashMap<>();
-        UIOrderingList orderingList = (UIOrderingList) component;
-        String clientId = orderingList.getBaseClientId(context);
-        ExternalContext externalContext = context.getExternalContext();
-        Map<String, String[]> requestParameterValuesMap = externalContext.getRequestParameterValuesMap();
+        
         String[] strings = requestParameterValuesMap.get(clientId);
         if (strings != null && strings.length != 0) {
             for (String string : strings) {
                 boolean firstCharIsLetter = Character.isLetter(string.charAt(0));
                 boolean secondCharIsLetter = Character.isLetter(string.charAt(1));
                 int indexDivisor = string.indexOf(":");
-                int indexReal = firstCharIsLetter ? (secondCharIsLetter ? 2 : 1) : 0;
+                int indexReal = firstCharIsLetter ? (secondCharIsLetter ? INDEX_REAL_SECOND_LETTER : INDEX_REAL_FIRST_LETTER) : INDEX_REAL_DEFAULT;
                 int indexVirtual = indexDivisor + 1;
                 Integer real = Integer.valueOf(string.substring(indexReal, indexDivisor));
                 String virtual = string.substring(indexVirtual);
