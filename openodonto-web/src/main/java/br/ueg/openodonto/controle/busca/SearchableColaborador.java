@@ -16,6 +16,7 @@ import br.ueg.openodonto.dominio.constante.CategoriaProduto;
 import br.ueg.openodonto.persistencia.dao.sql.SqlWhereOperatorType;
 import br.ueg.openodonto.servico.busca.FieldFacade;
 import br.ueg.openodonto.servico.busca.MessageDisplayer;
+import br.ueg.openodonto.servico.busca.SearchFilterBase;
 import br.ueg.openodonto.validator.ValidatorFactory;
 
 public class SearchableColaborador extends AbstractSearchable<Colaborador> {
@@ -66,10 +67,10 @@ public class SearchableColaborador extends AbstractSearchable<Colaborador> {
 	}
 	
 	private void buildProdutoDescricaoFilter() {
-		Validator validator = ValidatorFactory.newStrRangeLen(300,3, true);
-		getFiltersMap().put("produtoDescricaoFilter", buildBasicFilter("produtoDescricaoFilter","Descrição produto",validator));
-	}	
-	
+		Validator validator = ValidatorFactory.newStrRangeLen(300, 3, true);
+		SearchFilterBase produtoDescricaoFilter = buildBasicFilter("produtoDescricaoFilter", "Descrição produto", validator);
+		getFiltersMap().put("produtoDescricaoFilter", produtoDescricaoFilter);
+	}
 	public CategoriaProduto getCategoria() {
 		return categoria;
 	}
