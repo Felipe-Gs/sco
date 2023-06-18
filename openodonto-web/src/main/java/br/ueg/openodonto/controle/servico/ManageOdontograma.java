@@ -107,14 +107,19 @@ public class ManageOdontograma {
 		initOdontogramaStatusFilter();
 	}
 
-	public void acaoMudarAspecto(){
+	public void acaoMudarAspecto() {
 		Dente dente = evaluateDente();
 		TipoAscpectoDente aspecto = evaluateAspecto();
-	    if(dente != null && aspecto != null && odontograma != null && odontograma.getAspectos() != null){
-	    	OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();	    	
-	    	setDenteAspecto(dente, aspecto, comparator);	    	
-	    	updateMeta();
-	    }	    
+		
+		if (isDadosValidos(dente, aspecto)) {
+			OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();
+			setDenteAspecto(dente, aspecto, comparator);
+			updateMeta();
+		}
+	}
+
+	private boolean isDadosValidos(Dente dente, TipoAscpectoDente aspecto) {
+		return dente != null && aspecto != null && odontograma != null && odontograma.getAspectos() != null;
 	}
 
 	private void setDenteAspecto(Dente dente, TipoAscpectoDente aspecto,OdontogramaDenteAspectoComparator comparator) {
