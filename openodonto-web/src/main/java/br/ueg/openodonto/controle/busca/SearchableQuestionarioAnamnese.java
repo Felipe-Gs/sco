@@ -32,8 +32,17 @@ public class SearchableQuestionarioAnamnese extends AbstractSearchable<Questiona
 	}
 
 	private void addFieldFacade(String label, String columnName) {
-		OrmTranslator translator = new OrmTranslator(OrmResolver.getAllFields(new ArrayList<Field>(), QuestionarioAnamnese.class, true));
-		getFacade().add(new FieldFacade(label, translator.getColumn(columnName)));
+    OrmTranslator translator = createOrmTranslator(QuestionarioAnamnese.class);
+    FieldFacade fieldFacade = createFieldFacade(label, columnName, translator);
+    getFacade().add(fieldFacade);
+}
+
+	private OrmTranslator createOrmTranslator(Class<?> clazz) {
+		return new OrmTranslator(OrmResolver.getAllFields(new ArrayList<Field>(), clazz, true));
+	}
+
+	private FieldFacade createFieldFacade(String label, String columnName, OrmTranslator translator) {
+		return new FieldFacade(label, translator.getColumn(columnName));
 	}
 
 	@Override
