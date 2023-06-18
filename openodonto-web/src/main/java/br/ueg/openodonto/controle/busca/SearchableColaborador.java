@@ -50,27 +50,36 @@ public class SearchableColaborador extends AbstractSearchable<Colaborador> {
 		buildProdutoNomeFilter();
 		buildProdutoDescricaoFilter();
 	}
+	private static final int DESCRICAO_FILTER_MAX_LENGTH = 300;
+	private static final int DESCRICAO_FILTER_MIN_LENGTH = 5;
+	private static final int NOME_FILTER_MAX_LENGTH = 150;
+	private static final int NOME_FILTER_MIN_LENGTH = 3;
+	private static final int PRODUTO_NOME_FILTER_MAX_LENGTH = 100;
+	private static final int PRODUTO_NOME_FILTER_MIN_LENGTH = 3;
+	private static final int PRODUTO_DESCRICAO_FILTER_MAX_LENGTH = 300;
+	private static final int PRODUTO_DESCRICAO_FILTER_MIN_LENGTH = 3;
 
 	private void buildDescricaoFilter() {
-		Validator validator = ValidatorFactory.newStrRangeLen(300,5, true);
+		Validator validator = ValidatorFactory.newStrRangeLen(DESCRICAO_FILTER_MAX_LENGTH, DESCRICAO_FILTER_MIN_LENGTH, true);
 		getFiltersMap().put("descricaoFilter", buildBasicFilter("descricaoFilter","Descrição",validator));
 	}
-	
+
 	private void buildNameFilter() {
-		Validator validator = ValidatorFactory.newStrRangeLen(150,3, true);
+		Validator validator = ValidatorFactory.newStrRangeLen(NOME_FILTER_MAX_LENGTH, NOME_FILTER_MIN_LENGTH, true);
 		getFiltersMap().put("nomeFilter", buildBasicFilter("nomeFilter","Nome",validator));
 	}
-	
+
 	private void buildProdutoNomeFilter() {
-		Validator validator = ValidatorFactory.newStrRangeLen(100,3, true);
+		Validator validator = ValidatorFactory.newStrRangeLen(PRODUTO_NOME_FILTER_MAX_LENGTH, PRODUTO_NOME_FILTER_MIN_LENGTH, true);
 		getFiltersMap().put("produtoNomeFilter", buildBasicFilter("produtoNomeFilter","Nome produto",validator));
 	}
-	
+
 	private void buildProdutoDescricaoFilter() {
-		Validator validator = ValidatorFactory.newStrRangeLen(300, 3, true);
+		Validator validator = ValidatorFactory.newStrRangeLen(PRODUTO_DESCRICAO_FILTER_MAX_LENGTH, PRODUTO_DESCRICAO_FILTER_MIN_LENGTH, true);
 		SearchFilterBase produtoDescricaoFilter = buildBasicFilter("produtoDescricaoFilter", "Descrição produto", validator);
 		getFiltersMap().put("produtoDescricaoFilter", produtoDescricaoFilter);
 	}
+	
 	public CategoriaProduto getCategoria() {
 		return categoria;
 	}
