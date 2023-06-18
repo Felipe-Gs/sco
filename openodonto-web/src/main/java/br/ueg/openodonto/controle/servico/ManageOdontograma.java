@@ -278,31 +278,41 @@ public class ManageOdontograma {
 		validatorONome = ValidatorFactory.newStrRangeLen(150, 4, false);
 	}
 	
-	public void acaoManageProcedimento(){
-	    OdontogramaDente selected = evaluateSelected();
-	    if(selected != null && odontograma != null && odontograma.getOdontogramaDentes() != null){
-	    	boolean finded = false;
-	    	for(Iterator<OdontogramaDente> iterator = odontograma.getOdontogramaDentes().iterator();iterator.hasNext() && !finded;){
-	    		OdontogramaDente findOd = iterator.next();
-	    		if(selected.getDente() == findOd.getDente() && selected.getFace() == findOd.getFace()){
-	    			setOd(findOd);
-	    			finded = true;
-	    		}
-	    	}
-	    	if(!finded){
-	    		odontograma.getOdontogramaDentes().add(selected);
-	    		setOd(selected);
-	    	}
-	    }
-	    procedimentos = new ArrayList<ProcedimentoDenteAdapter>();
-	    if(getOd() != null && getOd().getProcedimentosMap() != null){
-	    	Iterator<Map.Entry<OdontogramaDenteProcedimento,Procedimento>> iterator = getOd().getProcedimentosMap().entrySet().iterator();
-	    	while(iterator.hasNext()){
-	    		Map.Entry<OdontogramaDenteProcedimento,Procedimento> entry = iterator.next();	    		
-	    		procedimentos.add(new ProcedimentoDenteAdapter(entry.getKey(), entry.getValue(),getDisplayer()));
-	    	}
-	    }
-	}
+	public void acaoManageProcedimento() {
+    OdontogramaDente selected = evaluateSelected();
+
+    if (isDadosValidos(selected)) {
+        OdontogramaDente findOd = buscarOdontogramaDente(selected);
+
+        if (findOd != null) {
+            setOd(findOd);
+        } else {
+            odontograma.getOdontogramaDentes().add(selected);
+            setOd(selected);
+        }
+    }
+
+    procedimentos = new ArrayList<ProcedimentoDenteAdapter>();
+    if (getOd() != null && getOd().getProcedimentosMap() != null) {
+        for (Map.Entry<OdontogramaDenteProcedimento, Procedimento> entry : getOd().getProcedimentosMap().entrySet()) {
+            procedimentos.add(new ProcedimentoDenteAdapter(entry.getKey(), entry.getValue(), getDisplayer()));
+        }
+    }
+}
+
+private boolean isDadosValidos(OdontogramaDente selected) {
+    return selected != null && odontograma != null && odontograma.getOdontogramaDentes() != null;
+}
+
+private OdontogramaDente buscarOdontogramaDente(OdontogramaDente selected) {
+    for (OdontogramaDente findOd : odontograma.getOdontogramaDentes()) {
+        if (selected.getDente() == findOd.getDente() && selected.getFace() == findOd.getFace()) {
+            return findOd;
+        }
+    }
+    return null;
+}
+
 	
 	private OdontogramaDente evaluateSelected(){
 	    try {
