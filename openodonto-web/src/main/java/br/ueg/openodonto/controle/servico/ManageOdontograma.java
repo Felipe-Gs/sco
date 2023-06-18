@@ -107,19 +107,14 @@ public class ManageOdontograma {
 		initOdontogramaStatusFilter();
 	}
 
-	public void acaoMudarAspecto() {
+	public void acaoMudarAspecto(){
 		Dente dente = evaluateDente();
 		TipoAscpectoDente aspecto = evaluateAspecto();
-		
-		if (isDadosValidos(dente, aspecto)) {
-			OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();
-			setDenteAspecto(dente, aspecto, comparator);
-			updateMeta();
-		}
-	}
-
-	private boolean isDadosValidos(Dente dente, TipoAscpectoDente aspecto) {
-		return dente != null && aspecto != null && odontograma != null && odontograma.getAspectos() != null;
+	    if(dente != null && aspecto != null && odontograma != null && odontograma.getAspectos() != null){
+	    	OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();	    	
+	    	setDenteAspecto(dente, aspecto, comparator);	    	
+	    	updateMeta();
+	    }	    
 	}
 
 	private void setDenteAspecto(Dente dente, TipoAscpectoDente aspecto,OdontogramaDenteAspectoComparator comparator) {
@@ -278,41 +273,31 @@ public class ManageOdontograma {
 		validatorONome = ValidatorFactory.newStrRangeLen(150, 4, false);
 	}
 	
-	public void acaoManageProcedimento() {
-    OdontogramaDente selected = evaluateSelected();
-
-    if (isDadosValidos(selected)) {
-        OdontogramaDente findOd = buscarOdontogramaDente(selected);
-
-        if (findOd != null) {
-            setOd(findOd);
-        } else {
-            odontograma.getOdontogramaDentes().add(selected);
-            setOd(selected);
-        }
-    }
-
-    procedimentos = new ArrayList<ProcedimentoDenteAdapter>();
-    if (getOd() != null && getOd().getProcedimentosMap() != null) {
-        for (Map.Entry<OdontogramaDenteProcedimento, Procedimento> entry : getOd().getProcedimentosMap().entrySet()) {
-            procedimentos.add(new ProcedimentoDenteAdapter(entry.getKey(), entry.getValue(), getDisplayer()));
-        }
-    }
-}
-
-private boolean isDadosValidos(OdontogramaDente selected) {
-    return selected != null && odontograma != null && odontograma.getOdontogramaDentes() != null;
-}
-
-private OdontogramaDente buscarOdontogramaDente(OdontogramaDente selected) {
-    for (OdontogramaDente findOd : odontograma.getOdontogramaDentes()) {
-        if (selected.getDente() == findOd.getDente() && selected.getFace() == findOd.getFace()) {
-            return findOd;
-        }
-    }
-    return null;
-}
-
+	public void acaoManageProcedimento(){
+	    OdontogramaDente selected = evaluateSelected();
+	    if(selected != null && odontograma != null && odontograma.getOdontogramaDentes() != null){
+	    	boolean finded = false;
+	    	for(Iterator<OdontogramaDente> iterator = odontograma.getOdontogramaDentes().iterator();iterator.hasNext() && !finded;){
+	    		OdontogramaDente findOd = iterator.next();
+	    		if(selected.getDente() == findOd.getDente() && selected.getFace() == findOd.getFace()){
+	    			setOd(findOd);
+	    			finded = true;
+	    		}
+	    	}
+	    	if(!finded){
+	    		odontograma.getOdontogramaDentes().add(selected);
+	    		setOd(selected);
+	    	}
+	    }
+	    procedimentos = new ArrayList<ProcedimentoDenteAdapter>();
+	    if(getOd() != null && getOd().getProcedimentosMap() != null){
+	    	Iterator<Map.Entry<OdontogramaDenteProcedimento,Procedimento>> iterator = getOd().getProcedimentosMap().entrySet().iterator();
+	    	while(iterator.hasNext()){
+	    		Map.Entry<OdontogramaDenteProcedimento,Procedimento> entry = iterator.next();	    		
+	    		procedimentos.add(new ProcedimentoDenteAdapter(entry.getKey(), entry.getValue(),getDisplayer()));
+	    	}
+	    }
+	}
 	
 	private OdontogramaDente evaluateSelected(){
 	    try {
@@ -379,21 +364,18 @@ private OdontogramaDente buscarOdontogramaDente(OdontogramaDente selected) {
 		batChangeAspect(getAllByHem(STATUS_HEM.DOWN),TipoAscpectoDente.NORMAL);
 	}
 	
-	public void batChangeAspect(List<Dente> dentes, TipoAscpectoDente aspecto) {
-    boolean hasValidData = false;
-    OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();
-
-    for (Dente dente : dentes) {
-        boolean isValid = dente != null && aspecto != null && odontograma != null && odontograma.getAspectos() != null;
-        if (isValid) {
-            hasValidData = true;
-            setDenteAspecto(dente, aspecto, comparator);
-        }
-    }
-
-		if (hasValidData) {
-			updateMeta();
+	public void batChangeAspect(List<Dente> dentes,TipoAscpectoDente aspecto){
+		boolean has = false;
+		OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();		
+		for(Dente dente : dentes){
+		    if(dente != null && aspecto != null && odontograma != null && odontograma.getAspectos() != null){
+		    	has = true;
+		    	setDenteAspecto(dente, aspecto, comparator);    		    	
+		    }			
 		}
+	    if(has){
+	    	updateMeta();
+	    }    
 	}
 	
 	private List<Dente> getAllByHem(STATUS_HEM hem){
@@ -404,34 +386,44 @@ private OdontogramaDente buscarOdontogramaDente(OdontogramaDente selected) {
 	}
 	
 	
-	public void updateMeta(){
-		if(this.odontograma != null &&
+	public void updateMeta() {
+		if (isOdontogramaValid()) {
+			initializeViewMeta();
+			updateViewMetaAdapter();
+			updateViewMetaAdapterAspectos();
+		}
+	}
+
+	private boolean isOdontogramaValid() {
+		return this.odontograma != null &&
 				this.odontograma.getAspectos() != null &&
 				this.odontograma.getOdontogramaDentes() != null &&
-				this.viewMetaAdapter != null){			
-			initializeViewMeta();
-			Iterator<OdontogramaDente> iteratorOD = this.odontograma.getOdontogramaDentes().iterator();
-			while(iteratorOD.hasNext()){
-				OdontogramaDente od = iteratorOD.next();
-				if(od.getDente() != null && od.getFace() != null && od.getProcedimentosMap() != null){
-					DenteMetaAdapter meta = this.viewMetaAdapter.get(od.getDente().getNumero().toString());
-					if(meta != null){
-						if(odontogramaStatusFilters != null){
-							meta.getProcedimentos().put(od.getFace().toString().toLowerCase(),countProcByActiveStatus(od.getProcedimentosMap()));
-						}						
-					}
+				this.viewMetaAdapter != null;
+	}
+
+	private void updateViewMetaAdapter() {
+		for (OdontogramaDente od : this.odontograma.getOdontogramaDentes()) {
+			if (isOdontogramaDenteValid(od)) {
+				DenteMetaAdapter meta = this.viewMetaAdapter.get(od.getDente().getNumero().toString());
+				if (meta != null && odontogramaStatusFilters != null) {
+					meta.getProcedimentos().put(od.getFace().toString().toLowerCase(), countProcByActiveStatus(od.getProcedimentosMap()));
 				}
-			}			
-			Iterator<OdontogramaDenteAspecto> iteratorODA = this.odontograma.getAspectos().iterator();
-			while(iteratorODA.hasNext()){
-				OdontogramaDenteAspecto oda = iteratorODA.next();
-				DenteMetaAdapter meta = this.viewMetaAdapter.get(oda.getDente().getNumero().toString());
-				if(oda.getAspecto() != null && meta != null){
-					meta.setAscpecto(oda.getAspecto());
-				}				
 			}
 		}
 	}
+
+private boolean isOdontogramaDenteValid(OdontogramaDente od) {
+    return od.getDente() != null && od.getFace() != null && od.getProcedimentosMap() != null;
+}
+
+private void updateViewMetaAdapterAspectos() {
+    for (OdontogramaDenteAspecto oda : this.odontograma.getAspectos()) {
+        DenteMetaAdapter meta = this.viewMetaAdapter.get(oda.getDente().getNumero().toString());
+        if (oda.getAspecto() != null && meta != null) {
+            meta.setAscpecto(oda.getAspecto());
+        }
+    }
+}
 	
 	private void initOdontogramaStatusFilter() {
 		odontogramaStatusFilters.clear();
