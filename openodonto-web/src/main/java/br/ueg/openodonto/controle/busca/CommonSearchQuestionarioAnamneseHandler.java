@@ -11,7 +11,7 @@ import br.ueg.openodonto.servico.busca.ResultFacade;
 import br.ueg.openodonto.util.WordFormatter;
 
 public class CommonSearchQuestionarioAnamneseHandler extends CommonSearchBeanHandler<QuestionarioAnamnese>{
-
+	private static final int MAX_DESC_LENGTH = 60;
 	private String[] showColumns = {"codigo", "nome" , "descricao"};
 	
 	public CommonSearchQuestionarioAnamneseHandler() {
@@ -23,7 +23,7 @@ public class CommonSearchQuestionarioAnamneseHandler extends CommonSearchBeanHan
 		Iterator<Map<String, Object>> iterator = result.iterator();
 		while(iterator.hasNext()){
 			Map<String,Object> value = iterator.next();
-			value.put("shortDescription", WordFormatter.abstractStr(value.get("descricao").toString(), 60));
+			value.put("shortDescription", WordFormatter.abstractStr(value.get("descricao").toString(), MAX_DESC_LENGTH));
 			resultWrap.add(buildWrapBean(value));
 		}
 		return resultWrap;

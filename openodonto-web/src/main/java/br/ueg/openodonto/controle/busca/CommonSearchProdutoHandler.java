@@ -18,6 +18,7 @@ import br.ueg.openodonto.servico.busca.Search;
 import br.ueg.openodonto.util.WordFormatter;
 
 public class CommonSearchProdutoHandler extends CommonSearchBeanHandler<Produto>{
+	final int MAX_DESCRIPTION_LENGTH = 60;
 	
 	private String[] showColumns = {"codigo", "nome", "categoria", "descricao"};
 	
@@ -27,17 +28,15 @@ public class CommonSearchProdutoHandler extends CommonSearchBeanHandler<Produto>
 	
 	@Override
 	public List<ResultFacade> wrapResult(List<Map<String, Object>> result) {
-		List<ResultFacade> resultWrap = new ArrayList<ResultFacade>(result.size());
-		Iterator<Map<String, Object>> iterator = result.iterator();
-		while(iterator.hasNext()){
-			Map<String,Object> value = iterator.next();
-			value.put("shortDescription", WordFormatter.abstractStr(value.get("descricao").toString(), 60));
-			value.put("categoriaDesc", CategoriaProduto.parseCategoria(value.get("categoria")));
-			resultWrap.add(buildWrapBean(value));
-		}
-		return resultWrap;
-	}
 
+    List<ResultFacade> resultWrap = new ArrayList<>(result.size());
+    for (Map<String, Object> value : result) {
+        value.put("shortDescription", WordFormatter.abstractStr(value.get("descricao").toString(), MAX_DESCRIPTION_LENGTH));
+        value.put("categoriaDesc", CategoriaProduto.parseCategoria(value.get("categoria")));
+        resultWrap.add(buildWrapBean(value));
+    }
+    return resultWrap;
+}
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Map<String,Object>> evaluateResult(Search<Produto> search) throws SQLException{
