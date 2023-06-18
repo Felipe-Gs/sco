@@ -379,18 +379,21 @@ private OdontogramaDente buscarOdontogramaDente(OdontogramaDente selected) {
 		batChangeAspect(getAllByHem(STATUS_HEM.DOWN),TipoAscpectoDente.NORMAL);
 	}
 	
-	public void batChangeAspect(List<Dente> dentes,TipoAscpectoDente aspecto){
-		boolean has = false;
-		OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();		
-		for(Dente dente : dentes){
-		    if(dente != null && aspecto != null && odontograma != null && odontograma.getAspectos() != null){
-		    	has = true;
-		    	setDenteAspecto(dente, aspecto, comparator);    		    	
-		    }			
+	public void batChangeAspect(List<Dente> dentes, TipoAscpectoDente aspecto) {
+    boolean hasValidData = false;
+    OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();
+
+    for (Dente dente : dentes) {
+        boolean isValid = dente != null && aspecto != null && odontograma != null && odontograma.getAspectos() != null;
+        if (isValid) {
+            hasValidData = true;
+            setDenteAspecto(dente, aspecto, comparator);
+        }
+    }
+
+		if (hasValidData) {
+			updateMeta();
 		}
-	    if(has){
-	    	updateMeta();
-	    }    
 	}
 	
 	private List<Dente> getAllByHem(STATUS_HEM hem){
