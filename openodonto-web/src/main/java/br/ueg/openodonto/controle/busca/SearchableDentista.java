@@ -45,6 +45,10 @@ public class SearchableDentista extends AbstractSearchable<Dentista> {
 	}
 	private static final int NAME_FILTER_MAX_LENGTH = 100;
 	private static final int NAME_FILTER_MIN_LENGTH = 3;
+
+	private static final int NAME_FILTER_MAX_LENGTH_ = 150;
+	private static final int NAME_FILTER_MAX_LENGTH__= 3;
+
 	
 	private void buildNameFilter() {
 		Validator validator = ValidatorFactory.newStrRangeLen(NAME_FILTER_MAX_LENGTH, NAME_FILTER_MIN_LENGTH, true);
@@ -60,7 +64,7 @@ public class SearchableDentista extends AbstractSearchable<Dentista> {
 	}
 	
 	private void buildEspecialidadeFilter(){
-		Validator validator = ValidatorFactory.newStrRangeLen(150,3, true);
+		Validator validator = ValidatorFactory.newStrRangeLen(NAME_FILTER_MAX_LENGTH_,NAME_FILTER_MAX_LENGTH_, true);
 		getFiltersMap().put("especialidadeFilter", buildBasicFilter("especialidadeFilter","Especialidade",validator));
 	}
 	
