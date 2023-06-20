@@ -13,10 +13,14 @@ import br.ueg.openodonto.dominio.Dentista;
 import br.ueg.openodonto.persistencia.dao.sql.SqlWhereOperatorType;
 import br.ueg.openodonto.servico.busca.FieldFacade;
 import br.ueg.openodonto.servico.busca.MessageDisplayer;
+import br.ueg.openodonto.servico.busca.SearchFilterBase;
 import br.ueg.openodonto.validator.ValidatorFactory;
 
 public class SearchableDentista extends AbstractSearchable<Dentista> {
 
+
+	
+	
 	private static final long serialVersionUID = -5557269675090544299L;
 
 	public SearchableDentista(MessageDisplayer displayer) {
@@ -39,10 +43,15 @@ public class SearchableDentista extends AbstractSearchable<Dentista> {
 		buildEspecialidadeFilter();
 		buildCodigoFilter();
 	}
+	private static final int NAME_FILTER_MAX_LENGTH = 100;
+	private static final int NAME_FILTER_MIN_LENGTH = 3;
 	
-	private void buildNameFilter(){
-		Validator validator = ValidatorFactory.newStrRangeLen(100,3, true);
-		getFiltersMap().put("nomeFilter", buildBasicFilter("nomeFilter","Nome",validator));
+	private void buildNameFilter() {
+		Validator validator = ValidatorFactory.newStrRangeLen(NAME_FILTER_MAX_LENGTH, NAME_FILTER_MIN_LENGTH, true);
+		String filterName = "nomeFilter";
+		String filterDescription = "Nome";
+		SearchFilterBase nameFilter = buildBasicFilter(filterName, filterDescription, validator);
+		getFiltersMap().put(filterName, nameFilter);
 	}
 	
 	private void buildCroFilter(){
