@@ -14,6 +14,7 @@ import br.ueg.openodonto.persistencia.dao.sql.SqlWhereOperatorType;
 import br.ueg.openodonto.servico.busca.FieldFacade;
 import br.ueg.openodonto.servico.busca.InputMask;
 import br.ueg.openodonto.servico.busca.MessageDisplayer;
+import br.ueg.openodonto.servico.busca.SearchFilterBase;
 import br.ueg.openodonto.validator.ValidatorFactory;
 
 public class SearchablePaciente extends AbstractSearchable<Paciente>{
@@ -46,9 +47,15 @@ public class SearchablePaciente extends AbstractSearchable<Paciente>{
 		buildCodigoFilter();
 	}
 	
-	private void buildNameFilter(){
-		Validator validator = ValidatorFactory.newStrRangeLen(100,3, true);
-		getFiltersMap().put("nomeFilter", buildBasicFilter("nomeFilter","Nome",validator));
+	private static final int NAME_FILTER_MAX_LENGTH = 100;
+	private static final int NAME_FILTER_MIN_LENGTH = 3;
+
+	private void buildNameFilter() {
+		Validator validator = ValidatorFactory.newStrRangeLen(NAME_FILTER_MAX_LENGTH, NAME_FILTER_MIN_LENGTH, true);
+		String filterName = "nomeFilter";
+		String filterDescription = "Nome";
+		SearchFilterBase nameFilter = buildBasicFilter(filterName, filterDescription, validator);
+		getFiltersMap().put(filterName, nameFilter);
 	}
 	
 	private void buildCpfFilter(){
