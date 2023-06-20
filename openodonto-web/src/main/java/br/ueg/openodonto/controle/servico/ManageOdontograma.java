@@ -97,25 +97,37 @@ public class ManageOdontograma {
 		}
 		return wraper;
 	}
-	
-	private void makeDefaultOdontograma(){
-		this.odontograma = new Odontograma();
-		this.odontograma.setData(new Timestamp(System.currentTimeMillis()));
-		this.odontograma.setNome("Odontograma Padrão");
-		this.odontograma.setDescricao("Primeira configuração do odontograma do paciente.");
-		initAddOdp();
-		initOdontogramaStatusFilter();
+	public void acaoMudarAspecto() {
+		if (shouldProcessDenteAspecto()) {
+			processDenteAspecto();
+			updateMeta();
+		}
 	}
 
-	public void acaoMudarAspecto(){
+	private boolean shouldProcessDenteAspecto() {
+		return isDenteValid() && isAspectoValid() && isOdontogramaAspectosValid();
+	}
+
+	private boolean isDenteValid() {
+		return evaluateDente() != null;
+	}
+
+	private boolean isAspectoValid() {
+		return evaluateAspecto() != null;
+	}
+
+	private boolean isOdontogramaAspectosValid() {
+		return odontograma != null && odontograma.getAspectos() != null;
+	}
+
+	private void processDenteAspecto() {
 		Dente dente = evaluateDente();
 		TipoAscpectoDente aspecto = evaluateAspecto();
-	    if(dente != null && aspecto != null && odontograma != null && odontograma.getAspectos() != null){
-	    	OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();	    	
-	    	setDenteAspecto(dente, aspecto, comparator);	    	
-	    	updateMeta();
-	    }	    
+		OdontogramaDenteAspectoComparator comparator = new OdontogramaDenteAspectoComparator();
+		setDenteAspecto(dente, aspecto, comparator);
 	}
+
+
 
 	private void setDenteAspecto(Dente dente, TipoAscpectoDente aspecto,OdontogramaDenteAspectoComparator comparator) {
 		OdontogramaDenteAspecto key = new OdontogramaDenteAspecto(dente);
